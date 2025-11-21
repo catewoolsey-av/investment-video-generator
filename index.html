@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Why We Invested – Video Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #F6F2F8;
+      --card: #FFFFFF;
+      --accent: #C8E8E7;
+      --accent-soft: rgba(200, 232, 231, 0.3);
+      --border-light: rgba(0, 51, 73, 0.55);
+      --border-medium: rgba(0, 51, 73, 0.55);
+      --text: #003349;
+      --text-muted: rgba(0, 51, 73, 0.6);
+      --danger: #7B569B;
+      --radius-lg: 18px;
+      --radius-sm: 10px;
+      --shadow-soft: 0 4px 20px rgba(0, 51, 73, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        sans-serif;
+      background: linear-gradient(180deg, #F6F2F8 0%, #FDFCFE 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 16px 48px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(200, 232, 231, 0.2);
+      border: 1px solid var(--border-light);
+      color: var(--text);
+    }
+
+    .pill span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #096E6B;
+      box-shadow: none;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: rgba(0, 51, 73, 0.75);
+      max-width: 520px;
+    }
+
+    .header-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-end;
+      font-size: 12px;
+      color: rgba(0, 51, 73, 0.75);
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .tag {
+      border-radius: 999px;
+      padding: 5px 12px;
+      background: rgba(200, 232, 231, 0.2);
+      border: 1px solid var(--border-light);
+      color: var(--text);
+      font-size: 11px;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 880px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+      header {
+        flex-direction: column;
+      }
+      .header-actions {
+        align-items: flex-start;
+      }
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+      padding: 24px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .card-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .card-title-row h2 {
+      font-size: 18px;
+      margin: 0;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .card-title-row .hint {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .row-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 640px) {
+      .row-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .dropzone {
+      border-radius: var(--radius-sm);
+      border: 1.5px dashed var(--border-medium);
+      padding: 20px 16px;
+      background: rgba(221, 233, 239, 0.3);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: border-color 0.15s ease, background 0.15s ease,
+        transform 0.08s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dropzone.dragover {
+      border-color: #096E6B;
+      background: rgba(200, 232, 231, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .dropzone label {
+      font-size: 13px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .dropzone span.primary {
+      font-size: 13px;
+      color: rgba(0, 51, 73, 0.75);
+    }
+
+    .dropzone small {
+      font-size: 12px;
+      color: rgba(0, 51, 73, 0.75);
+    }
+
+    .dropzone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .file-chip {
+      margin-top: 6px;
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(200, 232, 231, 0.3);
+      border: 1px solid var(--border-light);
+      color: var(--text);
+    }
+
+    .file-chip svg {
+      width: 11px;
+      height: 11px;
+    }
+
+    label.field-label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    input.text-input, select.text-input, textarea.text-input {
+      width: 100%;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-light);
+      background: #FFFFFF;
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input.text-input:focus,
+    select.text-input:focus,
+    textarea.text-input:focus {
+      border-color: #096E6B;
+      box-shadow: 0 0 0 3px rgba(9, 110, 107, 0.08);
+    }
+
+    textarea.text-input {
+      min-height: 60px;
+      resize: vertical;
+    }
+
+    .options-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+      gap: 8px;
+    }
+
+    .checkboxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .checkbox {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox input[type="checkbox"] {
+      cursor: pointer;
+    }
+
+    .checkbox span {
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .primary-button {
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #096E6B 0%, #0A8481 100%);
+      color: white;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.08s ease, box-shadow 0.15s ease;
+      box-shadow: 0 2px 8px rgba(9, 110, 107, 0.2);
+    }
+
+    .primary-button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(9, 110, 107, 0.3);
+    }
+
+    .primary-button:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .primary-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .status-line {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      background: rgba(221, 233, 239, 0.3);
+      border: 1px solid var(--border-light);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+    }
+
+    .status-line .bullet {
+      font-size: 10px;
+      color: rgba(0, 51, 73, 0.4);
+    }
+
+    .status-line.running {
+      background: rgba(200, 232, 231, 0.3);
+      border-color: #096E6B;
+    }
+
+    .status-line.running .bullet {
+      color: #096E6B;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    .status-line.error {
+      background: rgba(123, 86, 155, 0.1);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .status-line.error .bullet {
+      color: var(--danger);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 0;
+    }
+
+    .tab-button {
+      padding: 10px 16px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      font-size: 13px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .tab-button:hover {
+      color: var(--text);
+    }
+
+    .tab-button.active {
+      color: #096E6B;
+      border-bottom-color: #096E6B;
+      font-weight: 500;
+    }
+
+    .output-area {
+      background: rgba(221, 233, 239, 0.2);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      min-height: 200px;
+      font-family: ui-monospace, "SF Mono", Monaco, "Cascadia Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      color: var(--text);
+      overflow-x: auto;
+    }
+
+    .output-area.empty {
+      font-family: system-ui;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toggle-controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .secondary-button {
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      background: rgba(200, 232, 231, 0.2);
+      border: 1px solid var(--border-light);
+      font-size: 12px;
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .secondary-button:hover {
+      background: rgba(200, 232, 231, 0.4);
+    }
+
+    .download-button {
+      background: linear-gradient(135deg, #096E6B 0%, #0A8481 100%);
+      color: white;
+      border: none;
+      box-shadow: 0 2px 6px rgba(9, 110, 107, 0.15);
+    }
+
+    .download-button:hover {
+      box-shadow: 0 3px 8px rgba(9, 110, 107, 0.25);
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <div style="display: flex; align-items: center; gap: 12px">
+          <h1>Why We Invested</h1>
+          <span class="pill">
+            <span class="dot"></span>
+            AI-Powered Script Generator
+          </span>
+        </div>
+        <p class="subtitle">
+          Upload your due diligence report, company deck, and deal code info to
+          automatically generate video scripts, storyboards, and production configs.
+        </p>
+      </div>
+      <div class="header-actions">
+        <div style="font-weight: 500">Deal Stage</div>
+        <div class="tag-row">
+          <span class="tag">Post-Investment</span>
+          <span class="tag">v1.0</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- LEFT: Inputs -->
+      <section class="card">
+        <div class="section-label">Inputs</div>
+        <div class="card-title-row">
+          <h2>Documents & Details</h2>
+          <span class="hint">3 files required</span>
+        </div>
+
+        <div class="inputs-grid">
+          <!-- Due Diligence Upload -->
+          <div class="dropzone" data-type="dd">
+            <label>Due Diligence Report</label>
+            <span class="primary">Drop PDF or click to browse</span>
+            <small>Comprehensive DD with traction, product, team</small>
+            <input type="file" accept=".pdf,.docx,.doc" />
+            <div class="file-chip" hidden>
+              <svg fill="currentColor" viewBox="0 0 16 16">
+                <path
+                  d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"
+                />
+                <path
+                  d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"
+                />
+              </svg>
+              <span class="file-name">filename.pdf</span>
+            </div>
+          </div>
+
+          <!-- Company Deck Upload -->
+          <div class="dropzone" data-type="deck">
+            <label>Company Deck</label>
+            <span class="primary">Drop PDF / PPTX or click to browse</span>
+            <small>Pitch deck from founder</small>
+            <input type="file" accept=".pdf,.pptx,.ppt" />
+            <div class="file-chip" hidden>
+              <svg fill="currentColor" viewBox="0 0 16 16">
+                <path
+                  d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"
+                />
+                <path
+                  d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"
+                />
+              </svg>
+              <span class="file-name">deck.pdf</span>
+            </div>
+          </div>
+
+
+          <hr style="border: none; border-top: 1px solid var(--border-light); margin: 8px 0" />
+
+          <div>
+            <label class="field-label" for="websiteUrl">Company Website (optional)</label>
+            <input
+              id="websiteUrl"
+              class="text-input"
+              type="url"
+              placeholder="https://companyname.com"
+            />
+          </div>
+
+          <div class="row-2">
+            <div>
+              <label class="field-label" for="sponsorName">Sponsor Name</label>
+              <input
+                id="sponsorName"
+                class="text-input"
+                type="text"
+                placeholder="Mike Collins"
+              />
+            </div>
+            <div>
+              <label class="field-label" for="sponsorTitle">Sponsor Title (optional)</label>
+              <input
+                id="sponsorTitle"
+                class="text-input"
+                type="text"
+                placeholder="Managing Partner, AV Fund"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="field-label" for="fundName">Fund Name</label>
+            <input
+              id="fundName"
+              class="text-input"
+              type="text"
+              placeholder="Alumni Ventures – AI First Fund"
+            />
+          </div>
+
+          <div>
+            <label class="field-label" for="toneNotes">Tone / Notes (optional)</label>
+            <textarea
+              id="toneNotes"
+              class="text-input"
+              placeholder="E.g., calm, data-backed, avoid hype; emphasize co-investors and traction over TAM."
+            ></textarea>
+          </div>
+
+          <div class="options-row">
+            <div class="checkboxes">
+              <label class="checkbox">
+                <input type="checkbox" id="wantCore" checked />
+                <span>Core script</span>
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" id="wantTiktok" checked />
+                <span>TikTok script</span>
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" id="wantProspect" checked />
+                <span>Prospect-safe</span>
+              </label>
+            </div>
+            <button class="primary-button" id="generateBtn">
+              <span>Generate Scripts</span>
+              <span>⏵</span>
+            </button>
+          </div>
+
+          <div class="status-line" id="statusLine">
+            <span class="bullet">●</span>
+            <span>Waiting for inputs…</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Outputs -->
+      <section class="card">
+        <div class="section-label">Outputs</div>
+        <div class="card-title-row">
+          <h2>Generated Scripts</h2>
+        </div>
+
+        <div class="toggle-controls" id="toggleControls" style="display: none;">
+          <button class="secondary-button" id="toggleJsonBtn">Show JSON</button>
+          <button class="secondary-button download-button" id="downloadBtn">Download All</button>
+        </div>
+
+        <div class="tabs" id="tabsContainer" style="display: none;">
+          <button class="tab-button active" data-view="core">Core Script</button>
+          <button class="tab-button" data-view="tiktok">TikTok Script</button>
+          <button class="tab-button" data-view="prospect">Prospect-Safe</button>
+          <button class="tab-button" data-view="storyboard">Storyboard</button>
+        </div>
+
+        <div id="outputArea" class="output-area empty">
+          Scripts will appear here after generation.
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // CONFIGURATION
+    const N8N_WEBHOOK_URL = 'https://drewav.app.n8n.cloud/webhook/video-script-generator';
+    
+    // State management
+    const state = {
+      files: {
+        dd: null,
+        deck: null
+      },
+      jsonOutput: null,
+      currentView: "core",
+      showJson: false,
+      selectedOutputs: {
+        core: true,
+        tiktok: true,
+        prospect: true
+      }
+    };
+
+    // DOM references
+    const statusLine = document.getElementById("statusLine");
+    const generateBtn = document.getElementById("generateBtn");
+    const outputArea = document.getElementById("outputArea");
+    const tabsContainer = document.getElementById("tabsContainer");
+    const toggleControls = document.getElementById("toggleControls");
+
+    // Helper: update status line
+    function setStatus(message, mode = "idle") {
+      statusLine.classList.remove("running", "error");
+      if (mode === "running") statusLine.classList.add("running");
+      if (mode === "error") statusLine.classList.add("error");
+      statusLine.querySelector("span:nth-child(2)").textContent = message;
+    }
+
+    // Drag & drop file handling
+    document.querySelectorAll(".dropzone").forEach((zone) => {
+      const input = zone.querySelector('input[type="file"]');
+      const chip = zone.querySelector(".file-chip");
+      const fileNameSpan = chip.querySelector(".file-name");
+
+      function setFile(file) {
+        if (!file) return;
+        const type = zone.getAttribute("data-type");
+        state.files[type] = file;
+        fileNameSpan.textContent = file.name;
+        chip.hidden = false;
+      }
+
+      zone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        zone.classList.add("dragover");
+      });
+      
+      zone.addEventListener("dragleave", () => {
+        zone.classList.remove("dragover");
+      });
+      
+      zone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        zone.classList.remove("dragover");
+        const file = e.dataTransfer.files[0];
+        if (file) setFile(file);
+      });
+      
+      input.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) setFile(file);
+      });
+    });
+
+    // Track checkbox selections
+    document.getElementById("wantCore").addEventListener("change", (e) => {
+      state.selectedOutputs.core = e.target.checked;
+    });
+    document.getElementById("wantTiktok").addEventListener("change", (e) => {
+      state.selectedOutputs.tiktok = e.target.checked;
+    });
+    document.getElementById("wantProspect").addEventListener("change", (e) => {
+      state.selectedOutputs.prospect = e.target.checked;
+    });
+
+    // Tab switching
+    document.querySelectorAll(".tab-button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-button").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.currentView = btn.getAttribute("data-view");
+        updateOutputView();
+      });
+    });
+
+    // Toggle JSON view
+    document.getElementById("toggleJsonBtn").addEventListener("click", () => {
+      state.showJson = !state.showJson;
+      updateOutputView();
+      document.getElementById("toggleJsonBtn").textContent = state.showJson
+        ? "Hide JSON"
+        : "Show JSON";
+    });
+
+    // Download all outputs
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      if (!state.jsonOutput) return;
+      
+      const blob = new Blob([JSON.stringify(state.jsonOutput, null, 2)], {
+        type: 'application/json'
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'video-scripts-output.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    function updateOutputView() {
+      if (!state.jsonOutput) {
+        outputArea.classList.add("empty");
+        outputArea.textContent = "Scripts will appear here after generation.";
+        tabsContainer.style.display = "none";
+        toggleControls.style.display = "none";
+        return;
+      }
+
+      outputArea.classList.remove("empty");
+      tabsContainer.style.display = "flex";
+      toggleControls.style.display = "flex";
+
+      const view = state.currentView;
+
+      if (state.showJson) {
+        outputArea.textContent = JSON.stringify(state.jsonOutput, null, 2);
+        return;
+      }
+
+      // Show only selected outputs (hide tabs for unchecked items)
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        const viewType = btn.getAttribute('data-view');
+        if (viewType === 'storyboard') {
+          btn.style.display = 'block'; // Always show storyboard
+        } else if (!state.selectedOutputs[viewType]) {
+          btn.style.display = 'none';
+          // If current view is hidden, switch to first available
+          if (state.currentView === viewType) {
+            const firstVisible = Array.from(document.querySelectorAll('.tab-button'))
+              .find(b => b.style.display !== 'none');
+            if (firstVisible) {
+              firstVisible.click();
+            }
+          }
+        } else {
+          btn.style.display = 'block';
+        }
+      });
+
+      if (view === "core" && state.jsonOutput.scripts.core) {
+        outputArea.textContent = state.jsonOutput.scripts.core;
+      } else if (view === "tiktok" && state.jsonOutput.scripts.tiktok) {
+        outputArea.textContent = state.jsonOutput.scripts.tiktok;
+      } else if (view === "prospect" && state.jsonOutput.scripts.prospect_safe) {
+        outputArea.textContent = state.jsonOutput.scripts.prospect_safe;
+      } else if (view === "storyboard" && state.jsonOutput.storyboard) {
+        const lines = state.jsonOutput.storyboard.map((seg) => {
+          return (
+            `Segment ${seg.segment_id} (${seg.approx_start_seconds}s–${seg.approx_end_seconds}s)\n` +
+            `VO: ${seg.voiceover_text}\n` +
+            `On-screen: ${seg.on_screen_text}\n` +
+            `B-roll: ${seg.b_roll_suggestions.join(", ")}\n`
+          );
+        });
+        outputArea.textContent = lines.join("\n----------------------\n\n");
+      }
+    }
+
+    // Main generation function
+    generateBtn.addEventListener("click", async () => {
+      const sponsorName = document.getElementById("sponsorName").value.trim();
+      const sponsorTitle = document.getElementById("sponsorTitle").value.trim();
+      const fundName = document.getElementById("fundName").value.trim();
+      const websiteUrl = document.getElementById("websiteUrl").value.trim();
+      const toneNotes = document.getElementById("toneNotes").value.trim();
+
+      // Validation
+      if (!state.files.dd || !state.files.deck) {
+        setStatus("Please upload all 2 required files (DD, Deck).", "error");
+        return;
+      }
+
+      if (!sponsorName || !fundName) {
+        setStatus("Please enter Sponsor Name and Fund Name.", "error");
+        return;
+      }
+
+      if (!state.selectedOutputs.core && !state.selectedOutputs.tiktok && !state.selectedOutputs.prospect) {
+        setStatus("Please select at least one script type to generate.", "error");
+        return;
+      }
+
+      setStatus("Uploading files and generating scripts with Claude AI…", "running");
+      generateBtn.disabled = true;
+
+      try {
+        // Prepare FormData for file upload
+        const formData = new FormData();
+        formData.append('dd_report', state.files.dd);
+        formData.append('company_deck', state.files.deck);
+        formData.append('sponsor_name', sponsorName);
+        formData.append('sponsor_title', sponsorTitle);
+        formData.append('fund_name', fundName);
+        formData.append('website_url', websiteUrl);
+        formData.append('tone_notes', toneNotes);
+        formData.append('generate_core', state.selectedOutputs.core);
+        formData.append('generate_tiktok', state.selectedOutputs.tiktok);
+        formData.append('generate_prospect', state.selectedOutputs.prospect);
+
+        // Send to n8n webhook
+        const response = await fetch(N8N_WEBHOOK_URL, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        
+        // Store the full response
+        state.jsonOutput = result;
+        
+        // Update UI
+        updateOutputView();
+        setStatus("✓ Scripts generated successfully!", "idle");
+        
+      } catch (error) {
+        console.error('Generation error:', error);
+        setStatus(`Error: ${error.message}`, "error");
+      } finally {
+        generateBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
