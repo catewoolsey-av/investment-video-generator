@@ -1095,6 +1095,7 @@
         formData.append('generate_core', state.selectedOutputs.core ? 'true' : 'false');
         formData.append('generate_tiktok', state.selectedOutputs.tiktok ? 'true' : 'false');
         formData.append('generate_prospect', state.selectedOutputs.prospect ? 'true' : 'false');
+        formData.append('generate_slides', state.selectedOutputs.slides ? 'true' : 'false');
 
         const response = await fetch(N8N_WEBHOOK_URL, {
           method: 'POST',
