@@ -814,10 +814,7 @@
         errors.push("Due Diligence Report is required");
       }
 
-      // ✅ Deck is OPTIONAL now (removed requirement)
-      // if (!state.files.deck) {
-      //   errors.push("Company Pitch Deck is required");
-      // }
+      // Deck is optional (no validation)
 
       const sponsorName = document.getElementById("sponsorName").value.trim();
       const fundName = document.getElementById("fundName").value.trim();
@@ -858,7 +855,7 @@
 
         formData.append('dd_report', state.files.dd);
 
-        // ✅ Only include deck if user actually uploaded one
+        // Deck is optional: only append if a file exists
         if (state.files.deck) {
           formData.append('company_deck', state.files.deck);
         }
