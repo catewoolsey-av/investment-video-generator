@@ -434,7 +434,7 @@
 
             <div>
               <label for="sponsorTitle" class="field-label">Sponsor Name</label>
-              <input type="text" id="sponsorTitle" class="text-input" placeholder="e.g., Managing Partner" data-field-name="sponsor_title" />
+              <input type="text" id="sponsorTitle" class="text-input" placeholder="e.g., Laura Rippy" data-field-name="sponsor_title" />
             </div>
           </div>
 
@@ -650,7 +650,7 @@
       const fundName = document.getElementById("fundName").value.trim();
       
       // Add header
-      fileContent += `Video Scripts - ${sponsorName || 'Sponsor'} - ${fundName || 'Fund'}\n`;
+      fileContent += `Video Scripts - ${sponsorName || 'Portco'} - ${fundName || 'Team'}\n`;
       fileContent += `Generated: ${new Date().toLocaleString()}\n`;
       fileContent += `${'='.repeat(80)}\n\n`;
 
@@ -879,8 +879,8 @@
       const sponsorName = document.getElementById("sponsorName").value.trim();
       const fundName = document.getElementById("fundName").value.trim();
 
-      if (!sponsorName) errors.push("Sponsor Name is required");
-      if (!fundName) errors.push("Sponsor Team is required");
+      if (!sponsorName) errors.push("Portco Name is required");
+      if (!fundName) errors.push("Team is required");
 
       const hasSelection = state.selectedOutputs.core ||
                           state.selectedOutputs.tiktok ||
