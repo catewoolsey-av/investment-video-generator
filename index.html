@@ -92,7 +92,7 @@
 
     main {
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
       gap: 16px;
     }
 
@@ -108,7 +108,7 @@
       border: 1px solid var(--border-light);
       padding: 24px;
       box-shadow: var(--shadow-soft);
-      height: 1000px;
+      height: 1100px;
       overflow-y: auto;
     }
 
@@ -279,17 +279,23 @@
 
     .output-section { display: flex; flex-direction: column; gap: 12px; }
 
-    .output-controls { display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    .output-controls { 
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
 
-    .tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+    .tabs { 
+      display: contents;
+    }
 
     .tab-button {
-      padding: 5px 10px;
+      padding: 8px 12px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-light);
       background: transparent;
       color: var(--text);
-      font-size: 11px;
+      font-size: 12px;
       cursor: pointer;
       transition: all 0.15s ease;
       white-space: nowrap;
@@ -305,12 +311,12 @@
     }
 
     .btn-copy {
-      padding: 5px 10px;
+      padding: 8px 12px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-light);
       background: white;
       color: var(--text);
-      font-size: 11px;
+      font-size: 12px;
       cursor: pointer;
       transition: all 0.15s ease;
       white-space: nowrap;
@@ -325,6 +331,10 @@
       background: rgba(200, 232, 231, 0.3);
       border-color: #096E6B;
       color: #096E6B;
+    }
+
+    .toggle-controls { 
+      display: contents;
     }
 
     .output-area {
@@ -362,7 +372,12 @@
       font-style: italic;
     }
 
-    .toggle-controls { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+    #emailControls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -514,9 +529,9 @@
           </div>
         </div>
 
-        <div id="emailControls" class="output-controls" style="display: none; margin-top: 10px;">
-          <input type="email" id="emailRecipientRight" class="text-input" placeholder="Enter email to receive scripts" style="flex: 1;" />
-          <button id="sendEmailBtn" class="btn-copy" style="white-space: nowrap;">Send Scripts</button>
+        <div id="emailControls" style="display: none;">
+          <input type="email" id="emailRecipientRight" class="text-input" placeholder="Enter email to receive scripts" />
+          <button id="sendEmailBtn" class="btn-copy">Send Scripts</button>
         </div>
 
         <textarea id="outputArea" class="output-area empty" readonly>Scripts will appear here after generation.</textarea>
@@ -818,9 +833,9 @@
       }
 
       outputArea.classList.remove("empty");
-      tabsContainer.style.display = "flex";
-      toggleControls.style.display = "flex";
-      emailControls.style.display = "flex";
+      tabsContainer.style.display = "contents";
+      toggleControls.style.display = "contents";
+      emailControls.style.display = "grid";
 
       document.querySelectorAll('.tab-button').forEach(btn => {
         const viewType = btn.getAttribute('data-view');
