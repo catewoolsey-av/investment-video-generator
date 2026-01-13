@@ -422,24 +422,24 @@
         </div>
 
         <div class="section-label" style="margin-top: 24px;">
-          Sponsor & Fund Info
+          Portco & Sponsor Info
         </div>
 
         <div class="inputs-grid">
           <div class="row-2">
             <div>
-              <label for="sponsorName" class="field-label">Sponsor Name</label>
-              <input type="text" id="sponsorName" class="text-input" placeholder="e.g., Laura Rippy" data-field-name="sponsor_name" />
+              <label for="sponsorName" class="field-label">Portco Name</label>
+              <input type="text" id="sponsorName" class="text-input" placeholder="e.g., Oura Ring" data-field-name="sponsor_name" />
             </div>
 
             <div>
-              <label for="sponsorTitle" class="field-label">Sponsor Title</label>
+              <label for="sponsorTitle" class="field-label">Sponsor Name</label>
               <input type="text" id="sponsorTitle" class="text-input" placeholder="e.g., Managing Partner" data-field-name="sponsor_title" />
             </div>
           </div>
 
           <div>
-            <label for="fundName" class="field-label">Sponsor Team</label>
+            <label for="fundName" class="field-label">Team</label>
             <input type="text" id="fundName" class="text-input" placeholder="e.g., Gold Team" data-field-name="fund_name" />
           </div>
         </div>
@@ -507,6 +507,7 @@
           </div>
           <div id="toggleControls" class="toggle-controls" style="display: none;">
             <button id="lockBtn" class="btn-copy">🔒 Unlock</button>
+            <button id="downloadBtn" class="btn-copy">Download Scripts</button>
             <button id="copyBtn" class="btn-copy">Copy Script</button>
           </div>
         </div>
@@ -543,6 +544,7 @@
     const toggleControls = document.getElementById("toggleControls");
     const emailControls = document.getElementById("emailControls");
     const lockBtn = document.getElementById("lockBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
     const copyBtn = document.getElementById("copyBtn");
     const sendEmailBtn = document.getElementById("sendEmailBtn");
 
@@ -635,6 +637,64 @@
       if (!state.locked[state.currentView]) {
         state.scripts[state.currentView] = outputArea.value;
       }
+    });
+
+    // ==================== DOWNLOAD FUNCTIONALITY ====================
+    downloadBtn.addEventListener("click", () => {
+      if (!state.jsonOutput || !state.scripts.core && !state.scripts.tiktok && !state.scripts.prospect) {
+        return;
+      }
+
+      let fileContent = '';
+      const sponsorName = document.getElementById("sponsorName").value.trim();
+      const fundName = document.getElementById("fundName").value.trim();
+      
+      // Add header
+      fileContent += `Video Scripts - ${sponsorName || 'Sponsor'} - ${fundName || 'Fund'}\n`;
+      fileContent += `Generated: ${new Date().toLocaleString()}\n`;
+      fileContent += `${'='.repeat(80)}\n\n`;
+
+      // Add each script with clear separators
+      if (state.scripts.core) {
+        fileContent += `IMPACTED INVESTOR VIDEO\n`;
+        fileContent += `${'-'.repeat(80)}\n\n`;
+        fileContent += state.scripts.core;
+        fileContent += `\n\n${'='.repeat(80)}\n\n`;
+      }
+
+      if (state.scripts.tiktok) {
+        fileContent += `MARKETING VIDEO (REDACTED)\n`;
+        fileContent += `${'-'.repeat(80)}\n\n`;
+        fileContent += state.scripts.tiktok;
+        fileContent += `\n\n${'='.repeat(80)}\n\n`;
+      }
+
+      if (state.scripts.prospect) {
+        fileContent += `MARKETING VIDEO (FULL)\n`;
+        fileContent += `${'-'.repeat(80)}\n\n`;
+        fileContent += state.scripts.prospect;
+        fileContent += `\n\n${'='.repeat(80)}\n`;
+      }
+
+      // Create and download file
+      const blob = new Blob([fileContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `video-scripts-${Date.now()}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      // Visual feedback
+      const originalText = downloadBtn.textContent;
+      downloadBtn.textContent = "✓ Downloaded!";
+      downloadBtn.classList.add("copied");
+      setTimeout(() => {
+        downloadBtn.textContent = originalText;
+        downloadBtn.classList.remove("copied");
+      }, 2000);
     });
 
     // ==================== COPY FUNCTIONALITY ====================
