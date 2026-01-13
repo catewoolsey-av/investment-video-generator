@@ -279,19 +279,20 @@
 
     .output-section { display: flex; flex-direction: column; gap: 12px; }
 
-    .output-controls { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+    .output-controls { display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
 
-    .tabs { display: flex; gap: 6px; }
+    .tabs { display: flex; gap: 4px; flex-wrap: wrap; }
 
     .tab-button {
-      padding: 6px 14px;
+      padding: 5px 10px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-light);
       background: transparent;
       color: var(--text);
-      font-size: 13px;
+      font-size: 11px;
       cursor: pointer;
       transition: all 0.15s ease;
+      white-space: nowrap;
     }
 
     .tab-button:hover { background: rgba(200, 232, 231, 0.15); }
@@ -304,14 +305,15 @@
     }
 
     .btn-copy {
-      padding: 6px 14px;
+      padding: 5px 10px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-light);
       background: white;
       color: var(--text);
-      font-size: 13px;
+      font-size: 11px;
       cursor: pointer;
       transition: all 0.15s ease;
+      white-space: nowrap;
     }
 
     .btn-copy:hover {
@@ -360,7 +362,7 @@
       font-style: italic;
     }
 
-    .toggle-controls { display: flex; gap: 8px; align-items: center; }
+    .toggle-controls { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
   </style>
 </head>
 <body>
